@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously
 
 import 'dart:io';
 import 'dart:math';
@@ -67,13 +67,12 @@ class NotificationServices {
         print("=== === Notification data type: ${message.data['type']}");
         print("=== === Notification data id: ${message.data['id']}");
       }
-      if(Platform.isAndroid){
+      if (Platform.isAndroid) {
         initLocalNotification(context: context, message: message);
         showNotification(message: message);
-      }else{
+      } else {
         showNotification(message: message);
       }
-
     });
   }
 
@@ -129,6 +128,20 @@ class NotificationServices {
   void refreshToken() async {
     firebaseMessaging.onTokenRefresh.listen((event) {
       print("=== Token Refresh: ${event.toString()} ===");
+    });
+  }
+
+  Future<void> setupInteractMessage({required BuildContext context}) async {
+    ///when app in terminated
+    RemoteMessage? initialMessage =
+        await FirebaseMessaging.instance.getInitialMessage();
+    if (initialMessage != null) {
+      handleMessage(context: context, message: initialMessage);
+    }
+
+    ///when app is in background
+    FirebaseMessaging.onMessageOpenedApp.listen((event) {
+      handleMessage(context: context, message: event);
     });
   }
 

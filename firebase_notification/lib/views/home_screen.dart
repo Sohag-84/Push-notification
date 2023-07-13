@@ -22,7 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
     notificationServices.getToken().then((value) {
       print("=== === Device Token: $value === ===");
     });
-
+    notificationServices.setupInteractMessage(context: context);
     // notificationServices.refreshToken();
   }
 
