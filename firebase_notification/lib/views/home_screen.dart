@@ -34,9 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
         centerTitle: true,
       ),
       body: Center(
-        child: Container(
-          child: Text("Firebase Push notification"),
-        ),
+        child: Text("Firebase Push notification"),
       ),
     );
   }

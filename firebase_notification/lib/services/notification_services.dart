@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:io';
 import 'dart:math';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -66,8 +67,13 @@ class NotificationServices {
         print("=== === Notification data type: ${message.data['type']}");
         print("=== === Notification data id: ${message.data['id']}");
       }
-      initLocalNotification(context: context, message: message);
-      showNotification(message: message);
+      if(Platform.isAndroid){
+        initLocalNotification(context: context, message: message);
+        showNotification(message: message);
+      }else{
+        showNotification(message: message);
+      }
+
     });
   }
 
@@ -133,7 +139,10 @@ class NotificationServices {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => MessageScreen(),
+          builder: (context) => MessageScreen(
+            title: message.data['type'],
+            id: message.data['id'],
+          ),
         ),
       );
     }
