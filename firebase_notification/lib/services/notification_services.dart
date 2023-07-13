@@ -3,6 +3,7 @@
 import 'dart:math';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_notification/views/message_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -48,11 +49,13 @@ class NotificationServices {
 
     await _flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
-      onDidReceiveNotificationResponse: (payload) {},
+      onDidReceiveNotificationResponse: (payload) {
+        handleMessage(context: context, message: message);
+      },
     );
   }
 
-  void firebaseInit() {
+  void firebaseInit({required BuildContext context}) {
     FirebaseMessaging.onMessage.listen((message) {
       if (kDebugMode) {
         print("=== === Notification Title: ${message.notification!.title}");
@@ -60,7 +63,10 @@ class NotificationServices {
         print("=== === Notification message id: ${message.messageId}");
         print("=== === Notification sender Id: ${message.senderId}");
         print("=== === Notification send time: ${message.sentTime}");
+        print("=== === Notification data type: ${message.data['type']}");
+        print("=== === Notification data id: ${message.data['id']}");
       }
+      initLocalNotification(context: context, message: message);
       showNotification(message: message);
     });
   }
@@ -118,5 +124,18 @@ class NotificationServices {
     firebaseMessaging.onTokenRefresh.listen((event) {
       print("=== Token Refresh: ${event.toString()} ===");
     });
+  }
+
+  ///handle message
+  void handleMessage(
+      {required BuildContext context, required RemoteMessage message}) {
+    if (message.data['type'] == 'msg') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MessageScreen(),
+        ),
+      );
+    }
   }
 }
