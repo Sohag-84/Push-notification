@@ -1,6 +1,6 @@
 # firebase_notification
 
-A new Flutter project.
+Firebase push notification
 
 ## Getting Started
 
